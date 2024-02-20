@@ -1,8 +1,6 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import time
 from sqlalchemy.orm import Session
+from typing import List
 
 from . import models, schemas
 from .database import engine, get_db
@@ -12,32 +10,12 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-# Connect postgres DB
-while True:
-    try:
-        conn = psycopg2.connect(
-            dbname="social_media_fastapi",
-            user="postgres",
-            password="1234",
-            host="localhost",
-            port="5432",
-            cursor_factory=RealDictCursor
-        )
-        cursor = conn.cursor()
-        print("Database connection was established successfully!")
-        break
-    except Exception as error:
-        print("Failed to connect database!")
-        print("Exception Error: ", error)
-        time.sleep(10)
-
-
 @app.get('/')
 def root():
     return {"message": "Welcome to my API"}
 
 
-@app.get('/posts')
+@app.get('/posts', response_model=List[schemas.PostResponse])
 def get_posts_list(db: Session = Depends(get_db)):
     #cursor.execute(
     #    """SELECT * FROM posts;"""
@@ -45,11 +23,11 @@ def get_posts_list(db: Session = Depends(get_db)):
     #posts = cursor.fetchall()
     
     posts = db.query(models.Post).all()
-    return {"data": posts}
+    return posts
 
 
-@app.post('/posts', status_code=status.HTTP_201_CREATED)
-def create_post(post: schemas.CreateUpdatePost, db: Session = Depends(get_db)):
+@app.post('/posts', status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
+def create_post(post: schemas.CreatePost, db: Session = Depends(get_db)):
     #cursor.execute(
     #    """
     #    INSERT INTO posts (title, content, published) 
@@ -67,10 +45,10 @@ def create_post(post: schemas.CreateUpdatePost, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_post)  # Retrieve created post (RETURNING *)
     
-    return {"data": new_post}
+    return new_post
 
 
-@app.get('/posts/latest')
+@app.get('/posts/latest', response_model=schemas.PostResponse)
 def get_latest_post(db: Session = Depends(get_db)):
     #cursor.execute(
     #    """
@@ -83,10 +61,10 @@ def get_latest_post(db: Session = Depends(get_db)):
     # TODO: add pydantic Post schemas created_at property and assign it instead of id.desc() 
     latest_post = db.query(models.Post).order_by(models.Post.id.desc()).first()
     
-    return {"detail": latest_post}
+    return latest_post
 
 
-@app.get('/posts/{id}')
+@app.get('/posts/{id}', response_model=schemas.PostResponse)
 def get_post_detail(id: int, db: Session = Depends(get_db)):
     #cursor.execute(
     #    """
@@ -103,11 +81,11 @@ def get_post_detail(id: int, db: Session = Depends(get_db)):
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with {id=} was not found")
 
-    return {"post_details": post}
+    return post
 
 
-@app.put('/posts/{id}')
-def update_post(id: int, updated_post: schemas.CreateUpdatePost, db: Session = Depends(get_db)):
+@app.put('/posts/{id}', response_model=schemas.PostResponse)
+def update_post(id: int, updated_post: schemas.UpdatePost, db: Session = Depends(get_db)):
     #cursor.execute(
     #    """
     #    UPDATE posts
@@ -129,7 +107,7 @@ def update_post(id: int, updated_post: schemas.CreateUpdatePost, db: Session = D
     post.update(updated_post.dict(), synchronize_session=False)
     db.commit()
     
-    return {"data": post.first()}
+    return post.first()
 
 
 @app.delete('/posts/{id}', status_code=status.HTTP_204_NO_CONTENT)
