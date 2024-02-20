@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
 
 # Posts
@@ -44,3 +44,19 @@ class UserResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+# Auth
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    # TODO: remove Optional typing
+    id: Optional[str] = None
