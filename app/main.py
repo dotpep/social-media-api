@@ -15,6 +15,7 @@ def root():
     return {"message": "Welcome to my API"}
 
 
+# Posts
 @app.get('/posts', response_model=List[schemas.PostResponse])
 def get_posts_list(db: Session = Depends(get_db)):
     #cursor.execute(
@@ -132,3 +133,14 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     db.commit()
     
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# Users
+@app.post('/users', status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
+def create_user(user: schemas.CreateUser, db: Session = Depends(get_db)):
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return new_user

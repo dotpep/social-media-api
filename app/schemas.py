@@ -1,7 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
+
+# Posts
 class PostBase(BaseModel):
     title: str
     content: str
@@ -23,3 +25,22 @@ class PostResponse(PostBase):
     # convert sqlalchemy model to dict that pydantic will handle
     class Config:
         from_attributes = True  # Renamed from orm_mode
+
+
+# Users
+class UserBase(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class CreateUser(UserBase):
+    pass
+
+
+class UserResponse(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
