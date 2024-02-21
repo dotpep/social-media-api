@@ -1,5 +1,6 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from typing import List, Optional
 
 from .. import models, schemas, oauth2
@@ -19,20 +20,27 @@ def get_posts_list(
     limit: int = 5,
     skip: int = 0,
     search: Optional[str] = "",
-    owner_id: Optional[int] = None
+    owner_id: Optional[int] = None,
+    logined_user: Optional[bool] = False
 ):
     #cursor.execute(
     #    """SELECT * FROM posts;"""
     #)
     #posts = cursor.fetchall()
     
-    posts = db.query(models.Post).filter(
+    # TODO: filtering by id and etc query params
+    
+    posts_query = db.query(models.Post).filter(
         models.Post.title.contains(search))
     
     if owner_id is not None:
-        posts = posts.filter_by(owner_id=int(owner_id))
+        # filter(and_(models.Post.owner_id == owner_id))   # from sqlalchemy import and_
+        posts_query = posts_query.filter_by(owner_id=int(owner_id))
+    
+    if logined_user:
+        posts_query = posts_query.filter_by(owner_id=current_user.id)
 
-    paginated_posts = posts.limit(limit).offset(skip)
+    paginated_posts = posts_query.limit(limit).offset(skip)
     
     return paginated_posts.all()
 
