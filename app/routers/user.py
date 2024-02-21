@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.User)
 def create_user(user: schemas.CreateUser, db: Session = Depends(get_db)):
     email = user.email
     user_query = db.query(models.User).filter_by(email=email).first()
@@ -31,7 +31,7 @@ def create_user(user: schemas.CreateUser, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.get('/{id}', response_model=schemas.UserResponse)
+@router.get('/{id}', response_model=schemas.User)
 def get_specific_user(
     id: int, 
     db: Session = Depends(get_db),

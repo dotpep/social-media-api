@@ -3,6 +3,30 @@ from datetime import datetime
 from typing import Optional
 
 
+# Users
+class UserBase(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class CreateUser(UserBase):
+    pass
+
+
+class User(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class UserInfo(BaseModel):
+    id: int
+    email: EmailStr
+    
+
 # Posts
 class PostBase(BaseModel):
     title: str
@@ -18,32 +42,14 @@ class UpdatePost(PostBase):
     pass
 
 
-class PostResponse(PostBase):
+class Post(PostBase):
     id: int
     created_at: datetime
+    owner: UserInfo
 
     # convert sqlalchemy model to dict that pydantic will handle
     class Config:
         from_attributes = True  # Renamed from orm_mode
-
-
-# Users
-class UserBase(BaseModel):
-    email: EmailStr
-    password: str
-
-
-class CreateUser(UserBase):
-    pass
-
-
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
-    
-    class Config:
-        from_attributes = True
 
 
 # Auth
