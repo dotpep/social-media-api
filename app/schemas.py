@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint
 from datetime import datetime
 from typing import Optional
 
@@ -45,6 +45,7 @@ class UpdatePost(PostBase):
 class Post(PostBase):
     id: int
     created_at: datetime
+    owner_id: int
     owner: UserInfo
 
     # convert sqlalchemy model to dict that pydantic will handle
@@ -66,3 +67,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     # TODO: remove Optional typing
     id: Optional[str] = None
+
+
+# Votes
+
+class Vote(BaseModel):
+    post_id: int
+    direction: bool
