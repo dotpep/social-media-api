@@ -20,13 +20,16 @@
 - SQLAlchemy
 - Alembic
 
-## TO DO Features
+## Features
+
+## TO DO
 
 - [x] CRUD Operations
-- [x] Authentication
-- [ ] Validation
-- [ ] Documentation
-- [ ] Testing
+- [x] Authentication with OAuth2 JWT Token
+- [x] Validation with Pydantic
+- [x] Alembic Migrations
+- [x] Documentation with Auto generated FastAPI docs and with API testing collection .json file using Insomnia
+- [ ] Testing with PyTest and UnitTest
 - [ ] Deployment on Cloud VPS or Hosting
 - [ ] Conteinerize with Docker
 - [ ] Configure Nginx and Uvicorn ASGI
@@ -34,23 +37,13 @@
 
 ## How to run locally
 
-### Running uvicorn server
-
-- Create venv and install dependencies in requirements.txt or use poetry
-- Run fastapi uvicorn server: `uvicorn app.main:app`
-- Run it in automatic reload mode when you change code with reload flag: `uvicorn app.main:app --reload`
-- Also you can specify port by: `--port 5000` by default: is `8000`
+1. Create Database and setup environment variables on `.env.example` file.
+2. Make Migrations of database models using Alembic
+3. Run Uvicorn server for FastAPI
 
 ---
 
-- How to stop background uvicorn server in windows (powershell) if any error or is still running in background:
-- <kbd>CTRL + C</kbd> to quit.
-- `netstat -ano | findstr :8080`
-- `Stop-Process -id <PID>` or `kill <PID>`
-
----
-
-- Also, you need provide Postgres db data like db_name, user_name, password etc.
+- You need provide Postgres database secret data like db_name, user_name, password etc into `.env` file.
 - In below instruction section:
 
 ### Setting up Environment variables files (In Development)
@@ -87,3 +80,26 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 ---
 
 - If somthings doesn't work try to delete `# Comment` in `.env` file I think this may help
+
+---
+
+- And migrate this database tables/entity using Alembic
+- In below instruction section:
+
+### Alembic Postgres database, SQLAlchemy models Migrations
+
+- migrate to last rivision: `alembic upgrade head`
+
+### Running uvicorn server
+
+- Create venv and install dependencies in requirements.txt or use poetry
+- Run fastapi uvicorn server: `uvicorn app.main:app`
+- Run it in automatic reload mode when you change code with reload flag: `uvicorn app.main:app --reload`
+- Also you can specify port by: `--port 5000` by default: is `8000`
+
+---
+
+- How to stop background uvicorn server in windows (powershell) if any error or is still running in background:
+- <kbd>CTRL + C</kbd> to quit.
+- `netstat -ano | findstr :8080`
+- `Stop-Process -id <PID>` or `kill <PID>`
