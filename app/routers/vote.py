@@ -34,7 +34,7 @@ def vote_post(
         models.Vote.post_id == vote.post_id, 
         models.Vote.user_id == current_user.id)
     found_vote = vote_query.first()
-    if vote.direction:
+    if vote.is_voted:
         if found_vote:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, 
                                 detail=f"user {current_user.id} has already voted on post {vote.post_id}")

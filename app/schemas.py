@@ -53,6 +53,14 @@ class Post(PostBase):
         from_attributes = True  # Renamed from orm_mode
 
 
+class PostVote(BaseModel):
+    Post: Post
+    votes: int
+
+    class Config:
+        from_attributes = True
+
+
 # Auth
 class UserLogin(BaseModel):
     email: EmailStr
@@ -73,4 +81,4 @@ class TokenData(BaseModel):
 
 class Vote(BaseModel):
     post_id: int
-    direction: bool
+    is_voted: bool

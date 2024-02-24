@@ -1,6 +1,7 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from sqlalchemy import func
 
 from .. import models, schemas, oauth2
 from ..database import get_db
@@ -11,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[schemas.Post])
+@router.get('/', response_model=List[schemas.PostVote])
 def get_posts_list(
     db: Session = Depends(get_db), 
     current_user: schemas.User = Depends(oauth2.get_current_user),
@@ -29,19 +30,24 @@ def get_posts_list(
     
     # TODO: filtering by id and etc query params
     
-    posts_query = db.query(models.Post).filter(
-        models.Post.title.contains(search))
-    
-    if owner_id is not None:
-        # filter(and_(models.Post.owner_id == owner_id))   # from sqlalchemy import and_
-        posts_query = posts_query.filter_by(owner_id=int(owner_id))
-    
-    if logined_user:
-        posts_query = posts_query.filter_by(owner_id=current_user.id)
+    #join_vote = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
+    #    models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).all()
 
-    paginated_posts = posts_query.limit(limit).offset(skip)
+
+    my_post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
     
-    return paginated_posts.all()
+    post_join = my_post.join(
+        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+    
+    post_filter = post_join.filter(models.Post.title.contains(search))
+    if owner_id is not None:
+        post_filter = post_filter.filter(models.Post.owner_id == int(owner_id))
+    if logined_user:
+        post_filter = post_filter.filter(models.Post.owner_id == current_user.id)
+    
+    post_paginate = post_filter.limit(limit).offset(skip)
+
+    return post_paginate.all()
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
@@ -71,7 +77,7 @@ def create_post(
     return new_post
 
 
-@router.get('/latest', response_model=schemas.Post)
+@router.get('/latest', response_model=schemas.PostVote)
 def get_latest_post(
     db: Session = Depends(get_db), 
     current_user: schemas.User = Depends(oauth2.get_current_user)
@@ -84,14 +90,23 @@ def get_latest_post(
     #    """
     #)
     #latest_post = cursor.fetchone()
-    latest_post = db.query(models.Post).order_by(
-        models.Post.created_at.desc()).first()
     
-    return latest_post
+    #join_vote = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
+    #    models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).all()
+    
+    post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+    
+    join_vote = post.join(
+        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+    
+    latest_post = join_vote.order_by(
+        models.Post.created_at.desc())
+    
+    return latest_post.first()
 
 
-@router.get('/{id}', response_model=schemas.Post)
-def get_post_detail(
+@router.get('/{id}', response_model=schemas.PostVote)
+def get_specific_post_detail(
     id: int, 
     db: Session = Depends(get_db), 
     current_user: schemas.User = Depends(oauth2.get_current_user)
@@ -106,13 +121,19 @@ def get_post_detail(
     #post = cursor.fetchone()
 
     #post = db.query(models.Post).filter(models.Post.id == id).first()
-    post = db.query(models.Post).filter_by(id=id).first()
     
-    if post is None:
+    post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+    
+    join_vote = post.join(
+        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+    
+    specific_post = join_vote.filter(models.Post.id == id)
+    
+    if specific_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"post with {id=} was not found")
 
-    return post
+    return specific_post.first()
 
 
 @router.put('/{id}', response_model=schemas.Post)
