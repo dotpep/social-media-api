@@ -8,12 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.109.2"}
-psycopg2 = "^2.9.9"
 sqlalchemy = "^1.4.51"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 pydantic-settings = "^2.2.1"
 alembic = "^1.13.1"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^21.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

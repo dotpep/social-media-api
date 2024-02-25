@@ -26,4 +26,5 @@ app.include_router(user.router)
 app.include_router(auth.router)
 
 app.get('/', tags=["Welcome Home Page"])(lambda: {
-    "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' endpoint"})
+    "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' endpoint.",
+    "source_code": "https://github.com/dotpep/social-media-api"})

@@ -1,0 +1,14 @@
+[Unit]
+Description=gunicorn instance to server social media api application
+After=network.target
+
+[Service]
+User=your_username
+Group=your_username
+WorkingDirectory=/home/your_username/app
+Environment="PATH=/home/your_username/app.venv/bin"
+EnvironmentFile=/home/your_username/app/.env
+ExecStart=/home/your_username/app.venv/bin/gunicorn --workers 4 --worker-class uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target
