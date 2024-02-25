@@ -34,12 +34,14 @@
 - [ ] Conteinerize with Docker
 - [ ] Configure Nginx and Uvicorn ASGI
 - [ ] GitHub action CI/CD
+- [ ] Apply SOLID principles, best practices and Common Patterns for Backend/API
 
 ## How to run locally
 
-1. Create Database and setup environment variables on `.env.example` file.
-2. Make Migrations of database models using Alembic
-3. Run Uvicorn server for FastAPI
+1. Clone this repo by: `git clone "https://github.com/dotpep/social-media-api"`
+2. Create Database and setup environment variables on `.env.example` file.
+3. Make Migrations of database models using Alembic
+4. Run Uvicorn server for FastAPI and Install Dependencies requirements.txt to Virtual Environment venv
 
 ---
 
@@ -83,6 +85,30 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ---
 
+- Create venv and Install dependencies
+- In below instruction section:
+
+### Create Venv and Install dependencies package from requirements.txt or use Poetry
+
+- Using poetry (run step by step)
+
+1. Install poetry: `pip install poetry`, Check poetry installation: `poetry --version`, if needed add poetry to env variable
+2. (Optional) Setup poetry to create venv inside project: `poetry config virtualenvs.in-project true`
+3. Generate venv: `poetry shell`
+4. Install all depe`poetry install`
+5. (Additonal Information) to exit activated venv you can write: `exit`
+
+---
+
+- Using python venv/pip (run step by step)
+
+1. Create venv: `python -m venv venv`
+2. Activate venv: `.\venv\Scripts\activate` (in VS code specify this venv in Python Intepreter command) also you activate specific `\Scripts\activate` like with `.ps`, `.bash`, `.bat`
+3. Install all needed package/dependency to venv: `pip install -r requirements.txt`
+4. (Additonal Information) to exit activated venv you can write: `deactivate`
+
+---
+
 - And migrate this database tables/entity using Alembic
 - In below instruction section:
 
@@ -92,7 +118,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ### Running uvicorn server
 
-- Create venv and install dependencies in requirements.txt or use poetry
 - Run fastapi uvicorn server: `uvicorn app.main:app`
 - Run it in automatic reload mode when you change code with reload flag: `uvicorn app.main:app --reload`
 - Also you can specify port by: `--port 5000` by default: is `8000`
