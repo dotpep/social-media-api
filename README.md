@@ -1,5 +1,10 @@
 # Social Media App API using FastAPI
 
+Demonstration of project in website here link and API docs in below: [https://dotpep.xyz] and [https://www.dotpep.xyz]
+
+- Swagger/OpenAPI docs: [https://dotpep.xyz/docs]
+- Redoc docs: [https://dotpep.xyz/redoc]
+
 ## Documentation
 
 - [Collection of API Testing Endpoints in Insomnia json file that can be imported any API test tool like Postman](/docs/README.md)
