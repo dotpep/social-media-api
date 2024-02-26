@@ -9,9 +9,11 @@ from .config import settings
 #import time
 
 # 'postgresql://<username>:<password>@<ip-address/hostname:port>/<database_name>'
-SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}'
+SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}'
+#SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://postgres:password1234@postgres:5432/fastapi'
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

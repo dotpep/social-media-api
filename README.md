@@ -1,21 +1,24 @@
 # Social Media App API using FastAPI
 
-Demonstration of project in website here link and API docs in below: [https://dotpep.xyz] and [https://www.dotpep.xyz]
+Demonstration of project in website here [https://dotpep.xyz] link and API docs in below:
 
 - Swagger/OpenAPI docs: [https://dotpep.xyz/docs]
 - Redoc docs: [https://dotpep.xyz/redoc]
+- API testing tool/client [Collection of requests/endpoints and Automatiom to testing API](/docs/README.md)
 
-## Documentation
+---
 
-- [Collection of API Testing Endpoints in Insomnia json file that can be imported any API test tool like Postman](/docs/README.md)
+- Docker image: [https://hub.docker.com/repository/docker/dotpep/social-media-fastapi]
+
+## Demonstration
 
 ### FastAPI endpoints/routes
 
-![API Endpoints/Routes](assets/api-routes.png)
+![API Endpoints/Routes](docs/assets/api-routes.png)
 
 ### Pydantic Schemas
 
-![API Pydantic Schemas](assets/api-schemas.png)
+![API Pydantic Schemas](docs/assets/api-schemas.png)
 
 ## Tech stack
 
@@ -35,18 +38,33 @@ Demonstration of project in website here link and API docs in below: [https://do
 - [x] Alembic Migrations
 - [x] Documentation with Auto generated FastAPI docs and with API testing collection .json file using Insomnia
 - [ ] Testing with PyTest and UnitTest
-- [ ] Deployment on Cloud VPS or Hosting
-- [ ] Conteinerize with Docker
-- [ ] Configure Nginx and Uvicorn ASGI
+- [x] Deployment on Cloud VPS or Hosting
+- [x] Conteinerize with Docker
+- [x] Configure Nginx and Uvicorn ASGI
 - [ ] GitHub action CI/CD
 - [ ] Apply SOLID principles, best practices and Common Patterns for Backend/API
+- [ ] Fetch API with GraphQL
 
 ## How to run locally
 
-1. Clone this repo by: `git clone "https://github.com/dotpep/social-media-api"`
-2. Create Database and setup environment variables on `.env.example` file.
-3. Make Migrations of database models using Alembic
-4. Run Uvicorn server for FastAPI and Install Dependencies requirements.txt to Virtual Environment venv
+1. Clone this repo by: `git clone "https://github.com/dotpep/social-media-api.git"`
+
+---
+With Docker (Easy way to run)
+
+1. Install Docker
+2. Run dev-server: `docker-compose -f .\docker-compose-dev.yml up` by specify `-d` flag it runs in background and to see logs `docker-compose -f .\docker-compose-dev.yml logs -f`
+3. Stop: `docker-compose -f .\docker-compose-dev.yml down`
+
+- Also for convenience you can delete `docker-compose-prod.yml` and rename `docker-compose-dev.yml` to `docker-compose.yml` and use short command `docker-compose up` without `-f .\docker-compose-dev.yml`
+- If you want use `.env` as environment variables in `docker-compose-dev.yml` uncomment `#env_file: # - ./.env` this line and comment `environment` section
+
+---
+Without Docker (Localy)
+
+1. Create Database and setup environment variables on `.env.example` file.
+2. Make Migrations of database models using Alembic
+3. Run Uvicorn server for FastAPI and Install Dependencies requirements.txt to Virtual Environment venv
 
 ---
 

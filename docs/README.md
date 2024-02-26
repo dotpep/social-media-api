@@ -2,6 +2,6 @@
 
 ## Table of Content
 
-- Insomnia Testing Tool json data (that can be imported to Postman and other API tools): [check it here](api-testing-collection-social-media.json)
+- Insomnia Testing .json file (that can be imported to Postman and other API tools/clients): [check it here](api-testing-collection-social-media.json)
 
-![Demonstration image in Insomnia](/assets/demo_insomnia.png)
+![Demonstration image in Insomnia](/docs/assets/demo_insomnia.png)
