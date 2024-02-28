@@ -23,23 +23,25 @@ def vote_post(
     db: Session = Depends(get_db), 
     current_user: schemas.User = Depends(oauth2.get_current_user)
 ):
-    post = db.query(models.Post).filter_by(id=vote.post_id).first()
+    post_id = vote.post_id
+    user_id = current_user.id
+    post = db.query(models.Post).filter_by(id=post_id).first()
     
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-                            detail=f"post with {vote.post_id=} was not found")
+                            detail=f"post with {post_id=} was not found")
     
     
     vote_query = db.query(models.Vote).filter(
-        models.Vote.post_id == vote.post_id, 
-        models.Vote.user_id == current_user.id)
+        models.Vote.post_id == post_id, 
+        models.Vote.user_id == user_id)
     found_vote = vote_query.first()
     if vote.is_voted:
         if found_vote:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, 
-                                detail=f"user {current_user.id} has already voted on post {vote.post_id}")
+                                detail=f"user {user_id=} has already voted on post {post_id=}")
 
-        new_vote = models.Vote(post_id=vote.post_id, user_id=current_user.id)
+        new_vote = models.Vote(post_id=post_id, user_id=user_id)
         db.add(new_vote)
         db.commit()
         

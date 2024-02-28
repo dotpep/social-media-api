@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 @router.get('/', response_model=List[schemas.PostVote])
-def get_posts_list(
+def get_all_posts(
     db: Session = Depends(get_db), 
     current_user: schemas.User = Depends(oauth2.get_current_user),
     # query params
@@ -127,13 +127,13 @@ def get_specific_post_detail(
     join_vote = post.join(
         models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
     
-    specific_post = join_vote.filter(models.Post.id == id)
+    specific_post = join_vote.filter(models.Post.id == id).first()
     
     if specific_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"post with {id=} was not found")
 
-    return specific_post.first()
+    return specific_post
 
 
 @router.put('/{id}', response_model=schemas.Post)
