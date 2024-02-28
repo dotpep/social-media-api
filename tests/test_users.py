@@ -19,13 +19,15 @@ from app import schemas
 
 
 def test_create_user(client):
-    res = client.post('/users', json={'email': 'test_user@gmail.com', 'password': 'password1234'})
-    #print(res.json())
+    request_data = {'email': 'test_user@gmail.com', 'password': 'password1234'}
     
-    new_user = schemas.User(**res.json())
+    res = client.post('/users', json=request_data)
+    user = res.json()
+    
+    validated_new_user = schemas.User(**user)
     
     assert res.status_code == 201
-    assert new_user.email == 'test_user@gmail.com'
+    assert validated_new_user.email == request_data['email']
     
     #data = res.json()
     #assert data.get('email') == 'foo@bar.com'
@@ -33,14 +35,17 @@ def test_create_user(client):
 
 
 def test_login_user(client, test_user):
-    res = client.post('/login', data={'username': test_user['email'], 
-                                      'password': test_user['password']})
+    request_data = {'username': test_user['email'], 'password': test_user['password']}
     
-    login_resp = schemas.Token(**res.json())
+    res = client.post('/login', data=request_data)
+    user = res.json()
+    
+    login_resp = schemas.Token(**user)
     paylaod = jwt.decode(login_resp.access_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-    id = paylaod.get("user_id")
-    
-    assert id == test_user['id']
+    user_id = paylaod.get("user_id")
+
+    assert user_id == test_user['id']
+    assert login_resp.access_token == user['access_token']
     assert login_resp.token_type == 'bearer'
     assert res.status_code == 200
 
@@ -54,8 +59,9 @@ def test_login_user(client, test_user):
     (None, None, 422),
 ])
 def test_incorrect_login(client, email, password, status_code):
-    res = client.post('/login', data={'username': email, 
-                                      'password': password})
+    request_data = {'username': email, 'password': password}
+    
+    res = client.post('/login', data=request_data)
     
     assert res.status_code == status_code
     #assert res.json().get('detail') == 'Invalid Credentials'
