@@ -29,3 +29,8 @@ app.get('/', tags=["Welcome Home Page"])(lambda: {
     "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' and `/redoc` endpoint.",
     "source_code": "https://github.com/dotpep/social-media-api",
     "domain_name": "https://dotpep.xyz/"})
+
+
+@app.get('/root', tags=["Welcome Home Page"], status_code=200)
+def root():
+    return {"message": "Hello World"}

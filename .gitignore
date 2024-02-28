@@ -1,6 +1,10 @@
 __pycache__
 .venv
 .env
+.pytest_cache
 
 api.service
 nginx.conf
+
+docs/deployment/
+docker-compose.yml

@@ -37,13 +37,12 @@ Demonstration of project in website here [https://dotpep.xyz] link and API docs 
 - [x] Validation with Pydantic
 - [x] Alembic Migrations
 - [x] Documentation with Auto generated FastAPI docs and with API testing collection .json file using Insomnia
-- [ ] Testing with PyTest and UnitTest
+- [ ] Testing with PyTest, UnitTest
 - [x] Deployment on Cloud VPS or Hosting
-- [x] Conteinerize with Docker
-- [x] Configure Nginx and Uvicorn ASGI
-- [ ] GitHub action CI/CD
-- [ ] Apply SOLID principles, best practices and Common Patterns for Backend/API
-- [ ] Fetch API with GraphQL
+- [x] Conteinerize with Docker & Docker compose
+- [x] Configure Nginx and Uvicorn ASGI, Gunicorn workers
+- [ ] GitHub action, CI/CD and Pipeline
+- [ ] Apply SOLID principles (Restructure project), Best practices and Common patterns for Backend/API
 
 ## How to run locally
 
