@@ -56,6 +56,6 @@ def vote_post(
         return {"message": "successfully deleted vote"}
 
 
-@router.get('/')
-def get_votes():
-    pass
+#@router.get('/')
+#def get_votes():
+#    pass

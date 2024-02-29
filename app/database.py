@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import create_database, database_exists
 
 from .config import settings
 
@@ -10,6 +11,10 @@ from .config import settings
 
 # 'postgresql://<username>:<password>@<ip-address/hostname:port>/<database_name>'
 SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}'
+
+# Create database if not already created
+if not database_exists(SQLALCHEMY_DATABASE_URL):
+    create_database(SQLALCHEMY_DATABASE_URL)
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)

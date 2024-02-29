@@ -40,30 +40,31 @@ def client(session):
     yield TestClient(app)
 
 
+# Helper functions
+def create_new_user(client, email, password):
+    user_data = {'email': email, 
+                 'password': password}
+    res = client.post('/users', json=user_data)
+    assert res.status_code == 201
+    
+    new_user = res.json()
+    new_user['password'] = password
+    return new_user
+
+
 # Fixture for testing
 @pytest.fixture
 def test_user(client) -> dict:
     user_data = {'email': 'test_user@gmail.com', 
                  'password': 'password1234'}
-    res = client.post('/users', json=user_data)
-    assert res.status_code == 201
-    
-    new_user = res.json()
-    new_user['password'] = user_data['password']
-    return new_user
+    return create_new_user(client, user_data['email'], user_data['password'])
 
 
 @pytest.fixture
 def test_user2(client) -> dict:
     user_data = {'email': 'second_test_user2@gmail.com', 
                  'password': 'password1234'}
-    res = client.post('/users', json=user_data)
-    assert res.status_code == 201
-    
-    new_user = res.json()
-    new_user['password'] = user_data['password']
-    return new_user
-
+    return create_new_user(client, user_data['email'], user_data['password'])
 
 
 @pytest.fixture
@@ -99,6 +100,21 @@ def test_posts(test_user, test_user2, session):
         "content": "4th content",
         "owner_id": test_user2['id']
     }]
+    
+    #test_user_posts = [{
+    #    "title": f"{i} post title",
+    #    "content": f"{i} post content",
+    #    "owner_id": test_user['id']
+    #} for i in range(1, 4)]
+    
+    #test_user2_posts = [{
+    #    "title": f"{i} post title",
+    #    "content": f"{i} post content",
+    #    "owner_id": test_user2['id']
+    #} for i in range(4, 7)]
+    
+    #all_posts = test_user_posts + test_user2_posts
+    
     
     create_post_model = lambda post: models.Post(**post)
     post_map = map(create_post_model, posts_data)

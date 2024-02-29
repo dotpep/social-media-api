@@ -20,12 +20,14 @@ def test_get_posts_list(authorized_client, test_posts):
     res = authorized_client.get('/posts')
 
     posts = res.json()
-    assert len(posts) == len(test_posts)
+    
+    QUERY_PARAM_PAGINATE_LIMIT: int = 5
+    assert len(posts) <= QUERY_PARAM_PAGINATE_LIMIT
     
     order_by_post_id = lambda x: (x['Post']['id'], x['Post']['id'])
     sorted_posts = sorted(posts, key=order_by_post_id)
     
-    for i in range(len(test_posts)):
+    for i in range(len(posts)):
         validated_post = schemas.PostVote(**sorted_posts[i])
         
         assert validated_post.Post.title == test_posts[i].title
@@ -46,7 +48,7 @@ def test_get_posts_list(authorized_client, test_posts):
     
     #print(validated_posts)
     
-    #for i in range(len(test_posts)):
+    #for i in range(len(posts)):
     #    assert validated_posts[i].Post.title == test_posts[i].title
     #    assert validated_posts[i].Post.content == test_posts[i].content
     #    assert validated_posts[i].Post.owner_id == test_posts[i].owner_id

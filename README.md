@@ -30,19 +30,44 @@ Demonstration of project in website here [https://dotpep.xyz] link and API docs 
 
 ## Features
 
+Endpoints:
+
+- You can create and login/auth with new user
+- You can create, update, delete and retrieve posts
+- You can vote on posts that you liked
+
+---
+
+- API and docs with FastAPI
+- Data Validation with Pydantic
+- Authentication with OAuth2 JWT Token
+- PostgreSQL as Database
+- SQLAlchemy as ORM
+- Alembic as Migration tool and for SQLAlchemy
+- Contenirezed with Docker
+- Deployed to cloud hosting on DigitalOcean DROPLETS
+- Server setup on VPS Ubuntu VM
+- Nginx and Gunicorn on Server
+- Production featured
+- Tesing API with PyTest
+- Additional API documentation with Insomnia testing/client http tool and .json file of collections
+
 ## TO DO
 
-- [x] CRUD Operations
+- [x] CRUD Operations and Routes/Endpoints
 - [x] Authentication with OAuth2 JWT Token
 - [x] Validation with Pydantic
 - [x] Alembic Migrations
-- [x] Documentation with Auto generated FastAPI docs and with API testing collection .json file using Insomnia
-- [ ] Testing with PyTest, UnitTest
+- [x] Documentation with Auto generated FastAPI docs and with API testing/client tool collection .json file using Insomnia
+- [x] Testing with PyTest, UnitTest
+    - [ ] 1. Restructure and Refactor tests
 - [x] Deployment on Cloud VPS or Hosting
 - [x] Conteinerize with Docker & Docker compose
 - [x] Configure Nginx and Uvicorn ASGI, Gunicorn workers
-- [ ] GitHub action, CI/CD and Pipeline
-- [ ] Apply SOLID principles (Restructure project), Best practices and Common patterns for Backend/API
+- [ ] GitHub action, CI/CD Pipeline
+- [ ] Apply SOLID principles, Best practices and Common patterns for Backend/API
+    - [ ] Restructure project
+- [ ] Continue project, add new features, ideas like logging etc.
 
 ## How to run locally
 
@@ -61,7 +86,7 @@ With Docker (Easy way to run)
 ---
 Without Docker (Localy)
 
-1. Create Database and setup environment variables on `.env.example` file.
+1. Setup environment variables on `.env.example` file to create Postgres Database (If the database is not created automatically, you will need to create it manually).
 2. Make Migrations of database models using Alembic
 3. Run Uvicorn server for FastAPI and Install Dependencies requirements.txt to Virtual Environment venv
 
@@ -84,8 +109,8 @@ Postgres Database env variables
 ```.env
 DATABASE_HOSTNAME=localhost
 DATABASE_PORT=5432
-DATABASE_PASSWORD=
-DATABASE_NAME=
+DATABASE_PASSWORD=yourpassword
+DATABASE_NAME=yourdbname
 DATABASE_USERNAME=postgres
 ```
 
