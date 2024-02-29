@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import models
-from .database import engine
 from .routers import post, user, auth, vote
 
 #models.Base.metadata.create_all(bind=engine)
@@ -26,8 +24,7 @@ app.include_router(user.router)
 app.include_router(auth.router)
 
 app.get('/', tags=["Welcome Home Page"])(lambda: {
-    "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' and `/redoc` endpoint. \
-        Succesfully deployed to production VPS Ubuntu Server with CI/CD Github Pipline.",
+    "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' and `/redoc` endpoint.",
     "source_code": "https://github.com/dotpep/social-media-api",
     "domain_name": "https://dotpep.xyz/"})
 
