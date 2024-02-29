@@ -3,9 +3,8 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 env:
-  SECRET_KEY: 9b68c9f53ff13f75b890b62af1d9435d65827796d21ceb16c5fe431f054dcde3
-  ALGORITHM: HS256
   ACCESS_TOKEN_EXPIRE_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}
+  ALGORITHM: HS256
 
 jobs:
   my_first_job:
@@ -13,10 +12,11 @@ jobs:
       name: testing
     env:
       DATABASE_HOSTNAME: ${{ secrets.DATABASE_HOSTNAME }}
-      DATABASE_PORT: 5432
-      DATABASE_PASSWORD: ${{ testing.DATABASE_PASSWORD }}
-      DATABASE_NAME: social_media_fastapi
-      DATABASE_USERNAME: postgres
+      DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     runs-on: ubuntu-20.04
     steps:
       - name: Pulling Git Repo
@@ -43,7 +43,6 @@ jobs:
           echo DATABASE_HOSTNAME
       - name: Checking Github Environment secrets
         run: |
-          echo "${{ testing.DATABASE_PASSWORD }}"
           echo DATABASE_PASSWORD
       - name: Checking Github Environment variables
         run: |
