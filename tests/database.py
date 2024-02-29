@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import create_database, database_exists
 import testing.postgresql
 
 from app.config import settings
+from app.utils import create_database_automatically
 
 
 # Database will be created and deleted automatically when you run pytests
@@ -14,8 +14,7 @@ DATABASE_NAME = f'{settings.DATABASE_NAME}_test'
 NORMAL_PSQL_DB_URL = f'postgresql+psycopg2://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{DATABASE_NAME}'
 
 # Create database if not already created
-if not database_exists(NORMAL_PSQL_DB_URL):
-    create_database(NORMAL_PSQL_DB_URL)
+create_database_automatically(NORMAL_PSQL_DB_URL)
 
 
 # Setup temporary testing postgres database

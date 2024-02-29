@@ -1,7 +1,7 @@
 # This is unnecessary file (I am use this for introduce myself testing using Pytest in general)
 import pytest
 
-from app.calculations import add, subtract, multiply, divide, BankAccount, InsufficientFundsException
+from .calculations import add, subtract, multiply, divide, BankAccount, InsufficientFundsException
 
 
 # Fixtures

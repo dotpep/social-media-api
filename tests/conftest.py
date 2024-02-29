@@ -6,6 +6,7 @@ from app.database import get_db, Base
 from app.oauth2 import create_access_token
 from app import models
 from .database import TestingSessionLocal, engine
+from .helpers import create_new_user
 
 
 # Configuration Fixtures
@@ -40,19 +41,8 @@ def client(session):
     yield TestClient(app)
 
 
-# Helper functions
-def create_new_user(client, email, password):
-    user_data = {'email': email, 
-                 'password': password}
-    res = client.post('/users', json=user_data)
-    assert res.status_code == 201
-    
-    new_user = res.json()
-    new_user['password'] = password
-    return new_user
-
-
 # Fixture for testing
+# User and Authentication
 @pytest.fixture
 def test_user(client) -> dict:
     user_data = {'email': 'test_user@gmail.com', 
@@ -81,6 +71,7 @@ def authorized_client(client, token):
     return client
 
 
+# Post
 @pytest.fixture
 def test_posts(test_user, test_user2, session):
     posts_data = [{

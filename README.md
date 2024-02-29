@@ -60,7 +60,6 @@ Endpoints:
 - [x] Alembic Migrations
 - [x] Documentation with Auto generated FastAPI docs and with API testing/client tool collection .json file using Insomnia
 - [x] Testing with PyTest, UnitTest
-    - [ ] 1. Restructure and Refactor tests
 - [x] Deployment on Cloud VPS or Hosting
 - [x] Conteinerize with Docker & Docker compose
 - [x] Configure Nginx and Uvicorn ASGI, Gunicorn workers
@@ -70,6 +69,18 @@ Endpoints:
 - [ ] Continue project, add new features, ideas like logging etc.
 
 ## How to run locally
+
+Pre-requisites (Requirements)
+
+Locally:
+
+1. Python version > 3.8
+2. Poetry(Optional)
+3. PostgreSQL version > 13
+
+- Or just Docker
+
+---
 
 1. Clone this repo by: `git clone "https://github.com/dotpep/social-media-api.git"`
 
