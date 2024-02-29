@@ -2,10 +2,6 @@ name: Build and Deploy Code
 
 on: [push, pull_request]
 
-env:
-  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}
-  ALGORITHM: HS256
-
 jobs:
   my_first_job:
     environment: 
@@ -17,6 +13,23 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      ALGORITHM: ${{ secrets.ALGORITHM }}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     runs-on: ubuntu-20.04
     steps:
       - name: Pulling Git Repo
@@ -33,19 +46,3 @@ jobs:
         run: |
           pip install pytest
           pytest -v
-
-  my_second_job:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checking Github Actions global secrets and variables
-        run: |
-          echo "${{ secrets.DATABASE_HOSTNAME }}"
-          echo DATABASE_HOSTNAME
-      - name: Checking Github Environment secrets
-        run: |
-          echo DATABASE_PASSWORD
-      - name: Checking Github Environment variables
-        run: |
-          echo "${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}"
-          echo ACCESS_TOKEN_EXPIRE_MINUTES
-
