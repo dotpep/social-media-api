@@ -32,7 +32,7 @@ jobs:
 
     runs-on: ubuntu-20.04
     steps:
-      - name: Pulling Git Repo
+      - name: Checkout Pulling Git Repo
         uses: actions/checkout@v4
 
       - name: Install Python version 3.10
@@ -70,11 +70,28 @@ jobs:
       #  run: echo ${{ steps.docker_build.outputs.digest }}
 
   deploy:
-   runs-on: ubuntu-20.04
-   needs: build
-   steps:
-    - name: Test deploying steps
-      run: echo "going to deploy some stuff"
+    environment: 
+      name: production
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - name: Checkout Pulling Git Repo
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS Ubuntu VM server and Executing ssh commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          password: ${{ secrets.PROD_PASSWORD }}
+          script: |
+            cd api/src
+            git pull
+            echo ${{ secrets.PROD_PASSWORD }} | sudo -S systemctl restart api
+      # login to our vps ubuntu server with ssh
+      # cd api/src
+      # git pull
+      # systemctl restart api
 
   #docker:
   #  runs-on: ubuntu-20.04
