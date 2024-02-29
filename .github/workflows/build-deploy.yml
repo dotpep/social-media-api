@@ -2,21 +2,51 @@ name: Build and Deploy Code
 
 on: [push, pull_request]
 
+env:
+  SECRET_KEY: 9b68c9f53ff13f75b890b62af1d9435d65827796d21ceb16c5fe431f054dcde3
+  ALGORITHM: HS256
+  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}
+
 jobs:
   my_first_job:
-   runs-on: ubuntu-20.04
-   steps:
-    - name: Pulling Git Repo
-      uses: actions/checkout@v4
-    - name: Install Python version 3.10
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Update pip
-      run: python -m pip install --upgrade pip
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-    - name: Run tests with PyTest
-      run: |
-        pip install pytest
-        pytest -v
+    environment: 
+      name: testing
+    env:
+      DATABASE_HOSTNAME: ${{ secrets.DATABASE_HOSTNAME }}
+      DATABASE_PORT: 5432
+      DATABASE_PASSWORD: ${{ testing.DATABASE_PASSWORD }}
+      DATABASE_NAME: social_media_fastapi
+      DATABASE_USERNAME: postgres
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Pulling Git Repo
+        uses: actions/checkout@v4
+      - name: Install Python version 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests with PyTest
+        run: |
+          pip install pytest
+          pytest -v
+
+  my_second_job:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checking Github Actions global secrets and variables
+        run: |
+          echo "${{ secrets.DATABASE_HOSTNAME }}"
+          echo DATABASE_HOSTNAME
+      - name: Checking Github Environment secrets
+        run: |
+          echo "${{ testing.DATABASE_PASSWORD }}"
+          echo DATABASE_PASSWORD
+      - name: Checking Github Environment variables
+        run: |
+          echo "${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}"
+          echo ACCESS_TOKEN_EXPIRE_MINUTES
+
