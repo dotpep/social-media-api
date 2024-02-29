@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from app import schemas
 
@@ -21,7 +22,7 @@ def test_create_post(authorized_client, test_user, test_posts, title, content, p
     assert validated_created_post.published == published
     
     assert validated_created_post.owner_id == test_user['id']
-    assert res.status_code == 201
+    assert res.status_code == status.HTTP_201_CREATED
 
 
 def test_create_post_default_published_true(authorized_client, test_user, test_posts):
@@ -35,7 +36,7 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
     validated_created_post = schemas.Post(**post)
     
     assert validated_created_post.published == True
-    assert res.status_code == 201
+    assert res.status_code == status.HTTP_201_CREATED
     
     assert validated_created_post.title == title
     assert validated_created_post.content == content
@@ -44,4 +45,4 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
 def test_unauthorized_user_create_post(client, test_user, test_posts):
     request_data = {"title": "post title created unauthorized user", "content": "some content"}
     res = client.post('/posts', json=request_data)
-    assert res.status_code == 401
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED

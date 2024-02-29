@@ -1,3 +1,6 @@
+from fastapi import status
+
+
 def test_successfully_delete_vote(authorized_client, test_posts, test_vote):
     post_id = test_posts[3].id
     is_vote = False  # if false then delete vote
@@ -7,7 +10,7 @@ def test_successfully_delete_vote(authorized_client, test_posts, test_vote):
     vote = res.json()
     
     assert vote['message'] == 'successfully deleted vote'
-    assert res.status_code == 201
+    assert res.status_code == status.HTTP_201_CREATED
 
 
 def test_delete_non_exist_vote(authorized_client, test_posts):
@@ -19,4 +22,4 @@ def test_delete_non_exist_vote(authorized_client, test_posts):
     vote = res.json()
     
     assert vote['detail'] == 'vote does not exists'
-    assert res.status_code == 404
+    assert res.status_code == status.HTTP_404_NOT_FOUND

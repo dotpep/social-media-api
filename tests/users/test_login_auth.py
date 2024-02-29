@@ -1,5 +1,6 @@
 import pytest
 from jose import jwt
+from fastapi import status
 
 from app.config import settings
 from app import schemas
@@ -18,16 +19,16 @@ def test_login_user(client, test_user):
     assert user_id == test_user['id']
     assert login_resp.access_token == user['access_token']
     assert login_resp.token_type == 'bearer'
-    assert res.status_code == 200
+    assert res.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.parametrize("email, password, status_code", [
-    ('wrong@email.com', 'password1234', 403),
-    ('test_user@gmail.com', 'wrongpassword1234', 403),
-    ('wrong@email.com', 'wrongpassword1234', 403),
-    (None, 'password1234', 422),
-    ('wrong@email.com', None, 422),
-    (None, None, 422),
+    ('wrong@email.com', 'password1234', status.HTTP_403_FORBIDDEN),
+    ('test_user@gmail.com', 'wrongpassword1234', status.HTTP_403_FORBIDDEN),
+    ('wrong@email.com', 'wrongpassword1234', status.HTTP_403_FORBIDDEN),
+    (None, 'password1234', status.HTTP_422_UNPROCESSABLE_ENTITY),
+    ('wrong@email.com', None, status.HTTP_422_UNPROCESSABLE_ENTITY),
+    (None, None, status.HTTP_422_UNPROCESSABLE_ENTITY),
 ])
 def test_incorrect_login(client, email, password, status_code):
     request_data = {'username': email, 'password': password}

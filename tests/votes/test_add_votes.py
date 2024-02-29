@@ -1,3 +1,5 @@
+from fastapi import status
+
 from app import models
 
 
@@ -27,7 +29,7 @@ def test_vote_on_post(authorized_client, test_user, test_posts, session):
     assert db_user_id == query_vote.user_id
     
     assert vote['message'] == 'successfully added vote'
-    assert res.status_code == 201
+    assert res.status_code == status.HTTP_201_CREATED
 
 
 def test_vote_twice_post(authorized_client, test_posts, test_vote, test_user):
@@ -41,7 +43,7 @@ def test_vote_twice_post(authorized_client, test_posts, test_vote, test_user):
     vote = res.json()
     
     assert vote['detail'] == f"user {user_id=} has already voted on post {post_id=}"
-    assert res.status_code == 409
+    assert res.status_code == status.HTTP_409_CONFLICT
 
 
 
@@ -54,7 +56,7 @@ def test_vote_non_exist_post(authorized_client, test_posts):
     vote = res.json()
     
     assert vote['detail'] == f"post with {post_id=} was not found"
-    assert res.status_code == 404
+    assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_unauthorized_user_vote_on_post(client, test_posts):
@@ -63,4 +65,4 @@ def test_unauthorized_user_vote_on_post(client, test_posts):
     request_data = {"post_id": post_id, "is_voted": is_vote}
     
     res = client.post('/votes', json=request_data)
-    assert res.status_code == 401
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED

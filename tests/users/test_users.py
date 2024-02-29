@@ -1,3 +1,5 @@
+from fastapi import status
+
 from app import schemas
 
 
@@ -9,7 +11,7 @@ def test_create_user(client):
     
     validated_new_user = schemas.User(**user)
     
-    assert res.status_code == 201
+    assert res.status_code == status.HTTP_201_CREATED
     assert validated_new_user.email == request_data['email']
     
     #data = res.json()

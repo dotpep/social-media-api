@@ -1,3 +1,5 @@
+from fastapi import status
+
 from app import schemas
 
 
@@ -39,9 +41,9 @@ def test_get_posts_list(authorized_client, test_posts):
     #    assert validated_posts[i].Post.owner_id == test_posts[i].owner_id
     
     
-    assert res.status_code == 200
+    assert res.status_code == status.HTTP_200_OK
 
 
 def test_unauthorized_user_get_all_posts(client, test_posts):
     res = client.get('/posts')
-    assert res.status_code == 401
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED

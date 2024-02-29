@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from app import schemas
 
@@ -26,7 +27,7 @@ def test_user_successfully_update_post(authorized_client, test_user, test_posts,
     assert validated_updated_post.published == test_post.published
     assert validated_updated_post.owner_id == test_user['id']
     
-    assert res.status_code == 200
+    assert res.status_code == status.HTTP_200_OK
 
 
 
@@ -37,7 +38,7 @@ def test_update_post_non_exist(authorized_client, test_user, test_posts):
                     "published": False}
     res = authorized_client.put(f'/posts/{post_id}', json=request_data)
 
-    assert res.status_code == 404
+    assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.parametrize('title, content, published', [
@@ -57,7 +58,7 @@ def test_update_other_user_post(authorized_client, test_user, test_posts, title,
     assert test_post.content != content
     assert test_post.published != published
     
-    assert res.status_code == 403
+    assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_unauthorized_user_update_post(client, test_user, test_posts):
@@ -67,4 +68,4 @@ def test_unauthorized_user_update_post(client, test_user, test_posts):
                     "published": False}
     
     res = client.put(f'/posts/{post_id}', json=request_data)
-    assert res.status_code == 401
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
