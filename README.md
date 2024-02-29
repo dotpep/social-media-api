@@ -64,6 +64,7 @@ Endpoints:
 - [x] Conteinerize with Docker & Docker compose
 - [x] Configure Nginx and Uvicorn ASGI, Gunicorn workers
 - [ ] GitHub action, CI/CD Pipeline
+    - [ ] Use Poetry insead of pip in action steps
 - [ ] Apply SOLID principles, Best practices and Common patterns for Backend/API
     - [ ] Restructure project
 - [ ] Continue project, add new features, ideas like logging etc.
