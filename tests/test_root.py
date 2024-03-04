@@ -8,4 +8,4 @@ def test_root(client):
     #print(res.status_code)
     assert res is not None
     assert res.status_code == status.HTTP_200_OK
-    assert res.json().get('message') == 'Hello World'
+    assert res.json().get('message') == 'Hello Dear Developer'

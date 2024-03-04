@@ -64,8 +64,8 @@ Endpoints:
 - [x] Conteinerize with Docker & Docker compose
 - [x] Configure Nginx and Uvicorn ASGI, Gunicorn workers
 - [ ] GitHub action, CI/CD Pipeline
-- [ ] Apply Clean Architecture, SOLID principles, Best practices and Common patterns for Backend/API
-    - [ ] Restructure project
+- [ ] Refactor, Apply Clean Architecture, SOLID principles, Best practices and Common patterns for Backend/API
+    - [x] Restructure project
 - [ ] Continue project, add new features, ideas like logging etc.
 
 ## How to run locally

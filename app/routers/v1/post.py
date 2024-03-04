@@ -4,8 +4,8 @@ from typing import List, Optional
 from sqlalchemy import func
 
 from app.models.post import Post
+from app.models.vote import Vote
 from app.schemas.user import IUser
-from app.schemas.vote import Vote
 from app.schemas.post import IPost, ICreatePost, IUpdatePost, IPostVote
 from app.configs import database
 from app.utils import oauth2

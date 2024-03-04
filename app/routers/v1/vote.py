@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.models.vote import Vote
 from app.models.post import Post
+from app.schemas.vote import IVote
 from app.schemas.user import IUser
-from app.schemas.vote import Vote
 from app.configs import database
 from app.utils import oauth2
 
@@ -24,7 +24,7 @@ def delete_vote():
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def vote_post(
-    vote: Vote, 
+    vote: IVote, 
     db: Session = Depends(database.get_db), 
     current_user: IUser = Depends(oauth2.get_current_user)
 ):
