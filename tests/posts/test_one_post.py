@@ -1,6 +1,6 @@
 from fastapi import status
 
-from app import schemas
+from app.schemas.post import IPostVote
 
 
 def test_get_one_post_detail(authorized_client, test_posts):
@@ -10,7 +10,7 @@ def test_get_one_post_detail(authorized_client, test_posts):
     res = authorized_client.get(f'/posts/{post_id}')
     post = res.json()
     
-    validated_post = schemas.PostVote(**post)
+    validated_post = IPostVote(**post)
     
     assert validated_post.Post.id == post_id
     assert validated_post.Post.title == test_post.title

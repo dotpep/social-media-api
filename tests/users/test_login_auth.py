@@ -2,8 +2,8 @@ import pytest
 from jose import jwt
 from fastapi import status
 
-from app.config import settings
-from app import schemas
+from app.configs.environment import settings
+from app.schemas.auth import IToken
 
 
 def test_login_user(client, test_user):
@@ -12,7 +12,7 @@ def test_login_user(client, test_user):
     res = client.post('/login', data=request_data)
     user = res.json()
     
-    login_resp = schemas.Token(**user)
+    login_resp = IToken(**user)
     paylaod = jwt.decode(login_resp.access_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     user_id = paylaod.get("user_id")
 

@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import testing.postgresql
 
-from app.config import settings
-from app.utils import create_database_automatically
+from app.configs.environment import settings
+from app.utils.database import create_database_automatically
 
 
 # Database will be created and deleted automatically when you run pytests

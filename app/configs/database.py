@@ -2,8 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from .config import settings
-from .utils import create_database_automatically
+from .environment import settings
+from app.utils.database import create_database_automatically
+
 
 #import psycopg2
 #from psycopg2.extras import RealDictCursor

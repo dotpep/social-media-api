@@ -1,10 +1,10 @@
 from fastapi.testclient import TestClient
 import pytest
 
+from app.models.post import Post
 from app.main import app
-from app.database import get_db, Base
-from app.oauth2 import create_access_token
-from app import models
+from app.configs.database import get_db, Base
+from app.utils.oauth2 import create_access_token
 from .database import TestingSessionLocal, engine
 from .helpers import create_new_user
 
@@ -107,7 +107,7 @@ def test_posts(test_user, test_user2, session):
     #all_posts = test_user_posts + test_user2_posts
     
     
-    create_post_model = lambda post: models.Post(**post)
+    create_post_model = lambda post: Post(**post)
     post_map = map(create_post_model, posts_data)
     posts = list(post_map)
     
@@ -121,5 +121,5 @@ def test_posts(test_user, test_user2, session):
     
     session.commit()
     
-    posts = session.query(models.Post).all()
+    posts = session.query(Post).all()
     return posts

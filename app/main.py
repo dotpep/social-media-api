@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import post, user, auth, vote
+from app.routers import v1
 
 #models.Base.metadata.create_all(bind=engine)
 
@@ -18,15 +18,16 @@ app.add_middleware(
 )
 
 
-app.include_router(post.router)
-app.include_router(vote.router)
-app.include_router(user.router)
-app.include_router(auth.router)
+app.include_router(v1.post.router)
+app.include_router(v1.vote.router)
+app.include_router(v1.user.router)
+app.include_router(v1.auth.router)
 
 app.get('/', tags=["Welcome Home Page"])(lambda: {
     "message": "Welcome to my Social Media API powered by FastAPI, API documentation in '/docs' and `/redoc` endpoint. Successfully CI/CD pipeline deployment!",
     "source_code": "https://github.com/dotpep/social-media-api",
     "domain_name": "https://dotpep.xyz/"})
+
 
 @app.get('/root', tags=["Welcome Home Page"], status_code=200)
 def root():

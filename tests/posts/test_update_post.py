@@ -1,7 +1,7 @@
 import pytest
 from fastapi import status
 
-from app import schemas
+from app.schemas.post import IPost
 
 
 @pytest.mark.parametrize('title, content, published', [
@@ -19,7 +19,7 @@ def test_user_successfully_update_post(authorized_client, test_user, test_posts,
     res = authorized_client.put(f'/posts/{post_id}', json=request_data)
     post = res.json()
     
-    validated_updated_post = schemas.Post(**post)
+    validated_updated_post = IPost(**post)
     
     assert validated_updated_post.id == post_id
     assert validated_updated_post.title == test_post.title

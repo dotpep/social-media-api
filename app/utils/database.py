@@ -1,19 +1,7 @@
-from passlib.context import CryptContext
 from sqlalchemy_utils import create_database, database_exists
 from urllib.parse import urlparse
 
 
-# Authentication
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-def verify(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-# Database
 def create_database_automatically(database_url: str) -> None:
     """Creates a SQLAlchemy database if it does not already exist.
 

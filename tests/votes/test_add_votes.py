@@ -1,6 +1,8 @@
 from fastapi import status
 
-from app import models
+from app.models.vote import Vote
+from app.models.user import User
+from app.models.post import Post
 
 
 def test_vote_on_post(authorized_client, test_user, test_posts, session):
@@ -13,14 +15,14 @@ def test_vote_on_post(authorized_client, test_user, test_posts, session):
     res = authorized_client.post(f'/votes', json=request_data)
     vote = res.json()
     
-    query_post = session.query(models.Post).filter_by(id=post_id).first()
+    query_post = session.query(Post).filter_by(id=post_id).first()
     db_post_id = query_post.id
     
-    query_user = session.query(models.User).filter_by(id=user_id).first()
+    query_user = session.query(User).filter_by(id=user_id).first()
     db_user_id = query_user.id
     
-    query_vote = session.query(models.Vote).filter(models.Vote.post_id == db_post_id,
-                                                   models.Vote.user_id == db_user_id).first()
+    query_vote = session.query(Vote).filter(Vote.post_id == db_post_id,
+                                                   Vote.user_id == db_user_id).first()
     
     assert post_id == db_post_id
     assert user_id == db_user_id

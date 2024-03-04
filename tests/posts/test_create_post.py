@@ -1,7 +1,7 @@
 import pytest
 from fastapi import status
 
-from app import schemas
+from app.schemas.post import IPost
 
 
 @pytest.mark.parametrize("title, content, published", [
@@ -15,7 +15,7 @@ def test_create_post(authorized_client, test_user, test_posts, title, content, p
     res = authorized_client.post(f'/posts', json=request_data)
     post = res.json()
     
-    validated_created_post = schemas.Post(**post)
+    validated_created_post = IPost(**post)
     
     assert validated_created_post.title == title
     assert validated_created_post.content == content
@@ -33,7 +33,7 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
     res = authorized_client.post(f'/posts', json=request_data)
     post = res.json()
     
-    validated_created_post = schemas.Post(**post)
+    validated_created_post = IPost(**post)
     
     assert validated_created_post.published == True
     assert res.status_code == status.HTTP_201_CREATED

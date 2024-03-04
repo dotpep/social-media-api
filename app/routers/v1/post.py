@@ -3,8 +3,13 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from sqlalchemy import func
 
-from .. import models, schemas, oauth2
-from ..database import get_db
+from app.models.post import Post
+from app.schemas.user import IUser
+from app.schemas.vote import Vote
+from app.schemas.post import IPost, ICreatePost, IUpdatePost, IPostVote
+from app.configs import database
+from app.utils import oauth2
+
 
 router = APIRouter(
     prefix="/posts",
@@ -12,10 +17,10 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[schemas.PostVote])
+@router.get('/', response_model=List[IPostVote])
 def get_all_posts(
-    db: Session = Depends(get_db), 
-    current_user: schemas.User = Depends(oauth2.get_current_user),
+    db: Session = Depends(database.get_db), 
+    current_user: IUser = Depends(oauth2.get_current_user),
     # query params
     limit: int = 5,
     skip: int = 0,
@@ -34,28 +39,28 @@ def get_all_posts(
     #    models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).all()
 
 
-    my_post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+    my_post = db.query(Post, func.count(Vote.post_id).label("votes"))
     
     post_join = my_post.join(
-        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+        Vote, Vote.post_id == Post.id, isouter=True).group_by(Post.id)
     
-    post_filter = post_join.filter(models.Post.title.contains(search))
+    post_filter = post_join.filter(Post.title.contains(search))
     if owner_id is not None:
-        post_filter = post_filter.filter(models.Post.owner_id == int(owner_id))
+        post_filter = post_filter.filter(Post.owner_id == int(owner_id))
     if logined_user:
-        post_filter = post_filter.filter(models.Post.owner_id == current_user.id)
+        post_filter = post_filter.filter(Post.owner_id == current_user.id)
     
     post_paginate = post_filter.limit(limit).offset(skip)
 
     return post_paginate.all()
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=IPost)
 def create_post(
-    post: schemas.CreatePost, 
-    db: Session = Depends(get_db),
+    post: ICreatePost, 
+    db: Session = Depends(database.get_db),
     # Constraint/Dependency to check Is User Authenticatated, Access to it if only True and user provide JWT token in body request
-    current_user: schemas.User = Depends(oauth2.get_current_user)
+    current_user: IUser = Depends(oauth2.get_current_user)
 ):
     #cursor.execute(
     #    """
@@ -69,7 +74,7 @@ def create_post(
     #conn.commit()
     
     #new_post = models.Post(title=post.title, content=post.content, published=post.published)
-    new_post = models.Post(owner_id=current_user.id, **post.dict())
+    new_post = Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)  # Retrieve created post (RETURNING *)
@@ -77,10 +82,10 @@ def create_post(
     return new_post
 
 
-@router.get('/latest', response_model=schemas.PostVote)
+@router.get('/latest', response_model=IPostVote)
 def get_latest_post(
-    db: Session = Depends(get_db), 
-    current_user: schemas.User = Depends(oauth2.get_current_user)
+    db: Session = Depends(database.get_db), 
+    current_user: IUser = Depends(oauth2.get_current_user)
 ):
     #cursor.execute(
     #    """
@@ -94,22 +99,22 @@ def get_latest_post(
     #join_vote = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
     #    models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).all()
     
-    post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+    post = db.query(Post, func.count(Vote.post_id).label("votes"))
     
     join_vote = post.join(
-        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+        Vote, Vote.post_id == Post.id, isouter=True).group_by(Post.id)
     
     latest_post = join_vote.order_by(
-        models.Post.created_at.desc())
+        Post.created_at.desc())
     
     return latest_post.first()
 
 
-@router.get('/{id}', response_model=schemas.PostVote)
+@router.get('/{id}', response_model=IPostVote)
 def get_specific_post_detail(
     id: int, 
-    db: Session = Depends(get_db), 
-    current_user: schemas.User = Depends(oauth2.get_current_user)
+    db: Session = Depends(database.get_db), 
+    current_user: IUser = Depends(oauth2.get_current_user)
 ):
     #cursor.execute(
     #    """
@@ -122,12 +127,12 @@ def get_specific_post_detail(
 
     #post = db.query(models.Post).filter(models.Post.id == id).first()
     
-    post = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+    post = db.query(Post, func.count(Vote.post_id).label("votes"))
     
     join_vote = post.join(
-        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id)
+        Vote, Vote.post_id == Post.id, isouter=True).group_by(Post.id)
     
-    specific_post = join_vote.filter(models.Post.id == id).first()
+    specific_post = join_vote.filter(Post.id == id).first()
     
     if specific_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
@@ -136,11 +141,11 @@ def get_specific_post_detail(
     return specific_post
 
 
-@router.put('/{id}', response_model=schemas.Post)
+@router.put('/{id}', response_model=IPost)
 def update_post(
-    id: int, updated_post: schemas.UpdatePost, 
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(oauth2.get_current_user)
+    id: int, updated_post: IUpdatePost, 
+    db: Session = Depends(database.get_db),
+    current_user: IUser = Depends(oauth2.get_current_user)
 ):
     #cursor.execute(
     #    """
@@ -154,7 +159,7 @@ def update_post(
     #updated_post = cursor.fetchone()
     #conn.commit()
     
-    post_query = db.query(models.Post).filter_by(id=id)
+    post_query = db.query(Post).filter_by(id=id)
     post = post_query.first()
     
     if post is None:
@@ -175,8 +180,8 @@ def update_post(
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(
     id: int, 
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(oauth2.get_current_user)
+    db: Session = Depends(database.get_db),
+    current_user: IUser = Depends(oauth2.get_current_user)
 ):
     #cursor.execute(
     #    """
@@ -189,7 +194,7 @@ def delete_post(
     #deleted_post = cursor.fetchone()
     #conn.commit()
     
-    post_query = db.query(models.Post).filter_by(id=id)
+    post_query = db.query(Post).filter_by(id=id)
     post = post_query.first()
     
     if post is None:

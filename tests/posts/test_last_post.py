@@ -1,6 +1,6 @@
 from fastapi import status
 
-from app import schemas
+from app.schemas.post import IPostVote
 
 
 def test_get_last_post(authorized_client, test_posts):
@@ -10,7 +10,7 @@ def test_get_last_post(authorized_client, test_posts):
     test_posts_length = len(test_posts)
     test_post = test_posts[test_posts_length - 1]
     
-    validated_post = schemas.PostVote(**post)
+    validated_post = IPostVote(**post)
     
     assert validated_post.Post.id == test_post.id
     assert test_posts_length == test_post.id

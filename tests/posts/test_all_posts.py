@@ -1,6 +1,6 @@
 from fastapi import status
 
-from app import schemas
+from app.schemas.post import IPostVote
 
 
 def test_get_posts_list(authorized_client, test_posts):
@@ -15,7 +15,7 @@ def test_get_posts_list(authorized_client, test_posts):
     sorted_posts = sorted(posts, key=order_by_post_id)
     
     for i in range(len(posts)):
-        validated_post = schemas.PostVote(**sorted_posts[i])
+        validated_post = IPostVote(**sorted_posts[i])
         
         assert validated_post.Post.title == test_posts[i].title
         assert validated_post.Post.content == test_posts[i].content
